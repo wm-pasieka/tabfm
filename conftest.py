@@ -21,9 +21,30 @@ which read absl flags such as ``--test_tmpdir``. Those flags are only parsed by
 pytest.
 """
 
+import importlib.util
 import sys
 
 from absl import flags
+
+# Backend-specific test modules import optional extras at import time (torch for
+# the pytorch backend; jax/flax/chex for the jax backend). The CI "core tests"
+# job runs `pip install -e .[dev]`, which pulls neither extra, so these modules
+# would otherwise fail collection with ModuleNotFoundError. Skip them when their
+# backend is not installed.
+_has_torch = importlib.util.find_spec("torch") is not None
+_has_jax = importlib.util.find_spec("jax") is not None
+collect_ignore = []
+if not _has_torch:
+  collect_ignore.append("tabfm/src/classifier_and_regressor_pytorch_test.py")
+if not _has_jax:
+  collect_ignore += [
+      "tabfm/src/jax/model_test.py",
+      "tabfm/src/jax/checkpointing_test.py",
+  ]
+# pytorch/model_test.py is a torch<->jax parity test: it imports both flax and
+# torch, so it needs *both* backends installed.
+if not (_has_torch and _has_jax):
+  collect_ignore.append("tabfm/src/pytorch/model_test.py")
 
 
 def pytest_configure(config):  # noqa: D401  (pytest hook)
