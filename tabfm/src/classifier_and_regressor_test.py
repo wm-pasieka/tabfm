@@ -17,7 +17,7 @@ from absl.testing import absltest
 from flax import nnx
 import numpy as np
 import pandas as pd
-from tabfm.src import model as tabfm_model
+from tabfm.src.jax import model as tabfm_model
 from tabfm.src.classifier_and_regressor import EnsembleGenerator
 from tabfm.src.classifier_and_regressor import TabFMClassifier
 from tabfm.src.classifier_and_regressor import TabFMRegressor

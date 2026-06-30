@@ -14,7 +14,7 @@
 
 """tabfm API."""
 
-from tabfm.src import tabfm_v1_0_0
+from tabfm.src.jax import tabfm_v1_0_0
 from tabfm.src.classifier_and_regressor import TabFMClassifier, TabFMRegressor
 
 # A new PyPI release will be pushed every time `__version__` is increased.
